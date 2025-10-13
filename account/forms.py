@@ -15,11 +15,13 @@ class SignUpForm(forms.ModelForm):
             self.fields[field].widget.attrs.update({'class': 'form-control'})
             
     password = forms.CharField(
-        max_length=150,
+        min_lengt=8,
+        max_length=15,
         widget=forms.PasswordInput(attrs={'placeholder': 'Password'})
     )
     password2 = forms.CharField(
-        max_length=150,
+        min_lengt=8,
+        max_length=15,
         widget=forms.PasswordInput(attrs={'placeholder': 'Confirm Password'})
     )
 
@@ -43,11 +45,13 @@ class SignInForm(forms.Form):
             self.fields[field].widget.attrs.update({'class': 'form-control'})
 
     username = forms.CharField(
-        max_length=150,
+        min_lengt=8,
+        max_length=15,
         widget=forms.TextInput(attrs={'placeholder': 'Username or Email'})
     )
     password = forms.CharField(
-        max_length=150,
+        min_lengt=8,
+        max_length=15,
         widget=forms.PasswordInput(attrs={'placeholder': 'Password'})
     )
     
@@ -78,11 +82,13 @@ class ResetPasswordConfirmForm(forms.Form):
             self.fields[field].widget.attrs.update({"class": "form-control"})
 
     password = forms.CharField(
-        max_length=150,
+        min_lengt=8,
+        max_length=15,
         widget=forms.PasswordInput(attrs={'placeholder': 'New Password'})
     )
     password2 = forms.CharField(
-        max_length=150,
+        min_lengt=8,
+        max_length=15,
         widget=forms.PasswordInput(attrs={'placeholder': 'Confirm Password'})
     )
 
@@ -96,14 +102,17 @@ class ChangePasswordForm(forms.Form):
             self.fields[field].widget.attrs.update({"class": "form-control"})
     
     current_password = forms.CharField(
-        max_length=150,
+        min_lengt=8,
+        max_length=15,
         widget=forms.PasswordInput({'placeholder': 'Current Password'})
     )
     password = forms.CharField(
-        max_length=150,
+         min_lengt=8,
+        max_length=15,
         widget=forms.PasswordInput({'placeholder': 'New Password'})
     )
     password2 = forms.CharField(
-        max_length=150,
+        min_lengt=8,
+        max_length=15,
         widget=forms.PasswordInput({'placeholder': 'Confirm Password'})
     )
