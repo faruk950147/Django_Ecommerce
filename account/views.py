@@ -87,7 +87,7 @@ class PasswordValidationView(generic.View):
                 })
 
             # Password mismatch
-            if password != password2:
+            elif password != password2:
                 return JsonResponse({
                     'status': 400,
                     'password_error': 'Passwords do not match! Please try again.'
@@ -166,7 +166,8 @@ class SignUpView(LogoutRequiredMixin, generic.View):
             if password != password2:
                 return JsonResponse({'status': 400, 'messages': 'Passwords do not match.'})
             
-            
+            elif len(password) < 8:
+                return JsonResponse({'status': 400, 'messages': 'Your password must be at least 8 characters or more long.'})
 
             # Create user
             user = User.objects.create_user(username=username, email=email, password=password)
