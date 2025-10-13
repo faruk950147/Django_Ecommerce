@@ -106,8 +106,6 @@ class PasswordValidationView(generic.View):
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON data', 'status': 400})
 
-
-
 @method_decorator(never_cache, name='dispatch')
 class SignInValidationView(generic.View):
     def post(self, request):
