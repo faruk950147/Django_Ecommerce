@@ -94,7 +94,7 @@ class PasswordValidationView(generic.View):
                 })
 
             # Minimum length
-            if len(password) < 8:
+            elif len(password) < 8:
                 return JsonResponse({
                     'status': 400,
                     'password_error': 'Your password must be at least 8 characters or more long.'
@@ -165,6 +165,8 @@ class SignUpView(LogoutRequiredMixin, generic.View):
 
             if password != password2:
                 return JsonResponse({'status': 400, 'messages': 'Passwords do not match.'})
+            
+            
 
             # Create user
             user = User.objects.create_user(username=username, email=email, password=password)
