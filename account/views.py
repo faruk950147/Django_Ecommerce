@@ -73,22 +73,40 @@ class EmailValidationView(generic.View):
         
 @method_decorator(never_cache, name='dispatch')
 class PasswordValidationView(generic.View):
-    def post(self, request):   
+    def post(self, request):
         try:
             data = json.loads(request.body)
             password = data.get('password', '').strip()
             password2 = data.get('password2', '').strip()
 
+           # Empty password check
+            if not password or not password2:
+                return JsonResponse({
+                    'status': 400,
+                    'password_error': 'Password is required!'
+                })
+
+            # Password mismatch
             if password != password2:
-                return JsonResponse({'password_error': 'Passwords does not match!', 'status': 400})
+                return JsonResponse({
+                    'status': 400,
+                    'password_error': 'Passwords do not match! Please try again.'
+                })
 
+            # Minimum length
             if len(password) < 8:
-                return JsonResponse({'password_info': 'Your password is too short! It must be at least 8 characters long.', 'status': 400})
+                return JsonResponse({
+                    'status': 400,
+                    'password_error': 'Your password must be at least 8 characters or more long.'
+                })
 
+            # All good
             return JsonResponse({'password_valid': True})
 
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON data', 'status': 400})
+
+
 
 @method_decorator(never_cache, name='dispatch')
 class SignInValidationView(generic.View):
