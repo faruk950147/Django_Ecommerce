@@ -1,6 +1,6 @@
 from django.contrib import admin
-from unfold.admin import ModelAdmin
 from django.contrib.auth.models import Group
+from django.contrib.admin import ModelAdmin
 from account.models import User, Profile
 admin.site.unregister(Group)
 
@@ -12,7 +12,7 @@ class UserAdmin(ModelAdmin):
 admin.site.register(User, UserAdmin)
 
 class ProfileAdmin(ModelAdmin):
-    list_display = ['id', 'user', 'image_tag', 'country', 'city', 'zip_code', 'phone', 'joined_date', 'updated_date']
+    list_display = ['id', 'user', 'image_tag', 'country', 'city', 'zip_code', 'phone', 'address', 'joined_date', 'updated_date']
     search_fields = ['user__username', 'phone', 'city', 'country']
     list_filter = ['country', 'city', 'joined_date']
     readonly_fields = ['image_tag']

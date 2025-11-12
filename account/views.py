@@ -73,34 +73,18 @@ class EmailValidationView(generic.View):
         
 @method_decorator(never_cache, name='dispatch')
 class PasswordValidationView(generic.View):
-    def post(self, request):
+    def post(self, request):   
         try:
             data = json.loads(request.body)
             password = data.get('password', '').strip()
             password2 = data.get('password2', '').strip()
 
-           # Empty password check
-            if not password or not password2:
-                return JsonResponse({
-                    'status': 400,
-                    'password_error': 'Password is required!'
-                })
+            if password != password2:
+                return JsonResponse({'password_error': 'Passwords does not match!', 'status': 400})
 
-            # Password mismatch
-            elif password != password2:
-                return JsonResponse({
-                    'status': 400,
-                    'password_error': 'Passwords do not match! Please try again.'
-                })
+            if len(password) < 8:
+                return JsonResponse({'password_info': 'Your password is too short! It must be at least 8 characters long.', 'status': 400})
 
-            # Minimum length
-            elif len(password) < 8:
-                return JsonResponse({
-                    'status': 400,
-                    'password_error': 'Your password must be at least 8 characters or more long.'
-                })
-
-            # All good
             return JsonResponse({'password_valid': True})
 
         except json.JSONDecodeError:
@@ -163,9 +147,6 @@ class SignUpView(LogoutRequiredMixin, generic.View):
 
             if password != password2:
                 return JsonResponse({'status': 400, 'messages': 'Passwords do not match.'})
-            
-            elif len(password) < 8:
-                return JsonResponse({'status': 400, 'messages': 'Your password must be at least 8 characters or more long.'})
 
             # Create user
             user = User.objects.create_user(username=username, email=email, password=password)
@@ -173,7 +154,8 @@ class SignUpView(LogoutRequiredMixin, generic.View):
             user.save()
 
             # Sending activation email
-            ActivationEmailSender(user, request, email).send()            
+            ActivationEmailSender(user, request, email).send()
+            
             return JsonResponse({'status': 200, 'messages': 'Your account was registered successfully. Please check your email!'})
         except json.JSONDecodeError:
             return JsonResponse({'status': 400, 'messages': 'Invalid JSON data!'})
@@ -334,6 +316,8 @@ class ResetPasswordView(LogoutRequiredMixin, generic.View):
         except Exception as e:
             return JsonResponse({'status': 400, 'messages': f"Error: {str(e)}"})
         
+
+            
 @method_decorator(never_cache, name='dispatch')    
 class ProfileView(LoginRequiredMixin, generic.View):
     login_url = reverse_lazy('sign')
@@ -342,15 +326,14 @@ class ProfileView(LoginRequiredMixin, generic.View):
         return render(request, 'account/profile.html')
     def post(self, request):
         try:
-            data = json.loads(request.body)
-            username = data.get("username")
-            email = data.get("email")
-            country = data.get("country")
-            city = data.get("city")
-            home_city = data.get("home_city")
-            zip_code = data.get("zip_code")
-            phone = data.get("phone")
-            address = data.get("address")
+            username = request.POST.get("username")
+            email = request.POST.get("email")
+            country = request.POST.get("country")
+            city = request.POST.get("city")
+            home_city = request.POST.get("home_city")
+            zip_code = request.POST.get("zip_code")
+            phone = request.POST.get("phone")
+            address = request.POST.get("address")
             user = get_object_or_404(User, id=request.user.id)
             user.username = username
             user.email = email
@@ -362,13 +345,11 @@ class ProfileView(LoginRequiredMixin, generic.View):
             user_p.zip_code = zip_code
             user_p.phone = phone
             user_p.address = address
-            if "image" in request.FILES:
-                image = request.FILES.get("image")
-                user_p.image = image
+            if "profile_image" in request.FILES:
+                user_p.image = request.FILES.get("profile_image")
             user_p.save()
+
             return JsonResponse({"status": 200, 'messages': 'Your profile updated successfully!'})
-        except json.JSONDecodeError:
-            return JsonResponse({'status': 400, 'messages': 'Invalid JSON data!'})
 
         except Exception as e:
             return JsonResponse({'status': 400, 'messages': f"Error: {str(e)}"})

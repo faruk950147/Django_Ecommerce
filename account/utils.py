@@ -44,20 +44,4 @@ class ActivationEmailSender:
 
         email_message = EmailMessage(subject, message, settings.EMAIL_HOST_USER, [self.email])
         EmailThread(email_message).start()
-        
-# Function based     
-# def send_activation_email(user, request, email):
-#     current_site = get_current_site(request)
-#     uid = urlsafe_base64_encode(force_bytes(user.id))
-#     token = account_activation_token.make_token(user)
-#     scheme = 'https' if request.is_secure() else 'http'
-#     activation_url = f"{scheme}://{current_site.domain}{reverse_lazy('activationview', kwargs={'uidb64': uid, 'token': token})}"
-#     subject = 'Just one more step - Verify your account'
-#     message = (
-#         f"Hello {user.username},\n\n"
-#         f"We're happy you're joining us! Please verify your account:\n"
-#         f"{activation_url}\n\nThanks,\nYour App Team"
-#     )
-#     email_message = EmailMessage(subject, message, settings.EMAIL_HOST_USER, [email])
-#     EmailThread(email_message).start()
 
