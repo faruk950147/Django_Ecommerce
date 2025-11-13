@@ -338,16 +338,19 @@ class ProfileView(LoginRequiredMixin, generic.View):
             user.username = username
             user.email = email
             user.save()
-            user_p = get_object_or_404(Profile, user=request.user)
-            user_p.country = country
-            user_p.city = city
-            user_p.home_city = home_city
-            user_p.zip_code = zip_code
-            user_p.phone = phone
-            user_p.address = address
+            profile = get_object_or_404(Profile, user=request.user)
+            profile.country = country
+            profile.city = city
+            profile.home_city = home_city
+            profile.zip_code = zip_code
+            profile.phone = phone
+            profile.address = address
             if "profile_image" in request.FILES:
-                user_p.image = request.FILES.get("profile_image")
-            user_p.save()
+                if profile.image:
+                    profile.image.delete(save=False)
+                profile.image = request.FILES["profile_image"]
+
+            profile.save()
 
             return JsonResponse({"status": 200, 'messages': 'Your profile updated successfully!'})
 
